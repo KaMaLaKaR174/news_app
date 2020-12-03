@@ -57,16 +57,23 @@ class _HomeState extends State<Home> {
     body: _loading ? Center(
       child: CircularProgressIndicator(),
     )
-     :SingleChildScrollView(
-            child: Container(
-        child: Column(
-          children: <Widget>[
-            //categories
-            Container(
-              height: 70,
-              margin: EdgeInsets.only(top: 5),
-              padding: EdgeInsets.symmetric(horizontal: 16,),
-              child: ListView.builder(
+     :RefreshIndicator(
+          onRefresh: () async {
+            setState(() {
+              getNews();
+            });
+            return await Future.delayed(Duration(seconds: 3));
+          },
+            child: SingleChildScrollView(
+              child: Container(
+          child: Column(
+            children: <Widget>[
+              //categories
+              Container(
+                height: 70,
+                margin: EdgeInsets.only(top: 5),
+                padding: EdgeInsets.symmetric(horizontal: 16,),
+                child: ListView.builder(
                 shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
                 itemCount:categories.length ,
@@ -74,29 +81,30 @@ class _HomeState extends State<Home> {
                   return CategoryTile(category: categories[index].category,
                   imageUrl: categories[index].imageUrl,);
                 },
+                  ),
               ),
-            ),
 
-            //articles
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16,),
-              child: ListView.builder(
-                itemCount: articles.length,
-                physics: ClampingScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (context,index){
-                  return ArticleTile(imageUrl: articles[index].urlToImage,
-                  title: articles[index].title,
-                  desc: articles[index].desc,
-                  url: articles[index].url,
-                  );
+              //articles
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16,),
+                child: ListView.builder(
+                  itemCount: articles.length,
+                  physics: ClampingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (context,index){
+                    return ArticleTile(imageUrl: articles[index].urlToImage,
+                    title: articles[index].title,
+                    desc: articles[index].desc,
+                    url: articles[index].url,
+                    );
 
-                },
+                  },
+                )
               )
-            )
-          ],
-        ),
+            ],
+          ),
     ),
+       ),
      ),
     );
   }
